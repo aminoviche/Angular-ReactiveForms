@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, NgForm, ValidatorFn, Validators } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 
 import { Customer } from './customer';
@@ -25,7 +25,8 @@ export class CustomerComponentReactive implements OnInit {
       email : ['', [Validators.required, Validators.email]],
       phone : [''],
       notification : ['', [Validators.required]],
-      rating : ['', ratingRange],
+     // rating : ['', ratingRangeWithoutParam],
+      rating : ['', ratingRange(1,5)],
       sendCatalog :'true',
     })
   }
@@ -61,9 +62,21 @@ export class CustomerComponentReactive implements OnInit {
 
 }
 
-function ratingRange(c : AbstractControl):{ [key :string]: boolean } | null {
+// Validation function without param
+function ratingRangeWithoutParam(c : AbstractControl):{ [key :string]: boolean } | null {
   if(c.value != null && isNaN(c.value) || c.value < 1 || c.value >5){
     return { 'range': true};
   }
   return null;
+}
+
+
+// Validation function with param
+function ratingRange(min : number,  max: number) :ValidatorFn {
+return (c : AbstractControl):{ [key :string]: boolean } | null => {
+  if(c.value != null && isNaN(c.value) || c.value < min || c.value >max){
+    return { 'range': true};
+  }
+  return null;
+  }
 }
