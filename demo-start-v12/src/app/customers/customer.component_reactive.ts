@@ -25,7 +25,7 @@ export class CustomerComponentReactive implements OnInit {
       emailGroup: this.fb.group({
         email: ['', [Validators.required, Validators.email]],
         confirmEmail: ['', [Validators.required]]
-      }),
+      }, { validators: emailMatcher }),
       phone: [''],
       notification: ['', [Validators.required]],
       // rating : ['', ratingRangeWithoutParam],
@@ -83,3 +83,20 @@ function ratingRange(min: number, max: number): ValidatorFn {
     return null;
   }
 }
+
+
+function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
+      const emailControl = c.get('email');
+      const confirmControl = c.get('confirmEmail');
+    
+      if (emailControl?.pristine || confirmControl?.pristine) {
+        return null;
+      }
+    
+      if (emailControl?.value === confirmControl?.value) {
+        return null;
+      }
+      return { match: true };
+    }
+  
+
