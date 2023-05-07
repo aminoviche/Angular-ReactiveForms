@@ -32,6 +32,15 @@ export class CustomerComponentReactive implements OnInit {
       rating: ['', ratingRange(1, 5)],
       sendCatalog: 'true',
     })
+
+    const notificationControl = this.customerForm.get('notification');
+
+    notificationControl?.valueChanges.subscribe(
+       value => this.setNotification(value),
+    );
+
+
+
   }
 
   save(): void {
@@ -52,12 +61,13 @@ export class CustomerComponentReactive implements OnInit {
 
   setNotification(notifyVia: String): void {
     const phoneControl = this.customerForm.get('phone');
-    if (notifyVia == 'TEXT') {
+    if (notifyVia.toLowerCase() == 'text') {
       phoneControl?.setValidators(Validators.required);
     } else {
       phoneControl?.clearValidators();
     }
-
+    console.log("setNotification");
+    console.log(notifyVia);
     phoneControl?.updateValueAndValidity();
   }
 
@@ -78,7 +88,7 @@ function ratingRangeWithoutParam(c: AbstractControl): { [key: string]: boolean }
 function ratingRange(min: number, max: number): ValidatorFn {
   return (c: AbstractControl): { [key: string]: boolean } | null => {
     if (c.value != null && isNaN(c.value) || c.value < min || c.value > max) {
-      return { 'range': true };
+      return { range: true };
     }
     return null;
   }
